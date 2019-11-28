@@ -9,12 +9,12 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace When_is_my_Bitrhday
+namespace How_old_is_me
 {
-    public static class WhenIsMyBitrhDay
+    public static class Howoldisme
     {
-        [FunctionName("WhenIsMyBitrhDay")]
-        public static async System.Threading.Tasks.Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
+        [FunctionName("How_old_is_me")]
+        public static async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequestMessage req, ILogger log)
         {
             var data = await req.Content.ReadAsAsync<DialogFlowRequest>();
             var Birthday = data.queryResult.parameters.Birthday;
@@ -24,7 +24,7 @@ namespace When_is_my_Bitrhday
             if (Birthday > today.AddYears(-age)) age--;
 
             var ResponceObject = new DialogFlowResponce();
-            ResponceObject.fulfillmentText = "Ç†Ç»ÇΩÇÕ" + age + "çŒÇ≈Ç∑";
+            ResponceObject.fulfillmentText = age + "çŒÇ≈Ç∑";
             string json = JsonConvert.SerializeObject(ResponceObject);
 
             //JSONÇ≈ÉäÉ^Å[Éì
