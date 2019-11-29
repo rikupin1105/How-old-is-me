@@ -16,20 +16,46 @@ namespace How_old_is_me
         {
             if (req.Method.ToString() == "POST")
             {
-                var data = await req.Content.ReadAsAsync<DialogFlowRequest>();
-                var Birthday = data.queryResult.parameters.Birthday;
+                try
+                {
+                    var data = await req.Content.ReadAsAsync<DialogFlowRequest>();
+                    var Birthday = data.queryResult.parameters.Birthday;
 
-                var today = DateTime.Today;
-                int age = today.Year - Birthday.Year;
-                if (Birthday > today.AddYears(-age)) age--;
+                    log.LogInformation(Birthday.ToString());
 
-                var ResponceObject = new DialogFlowResponce();
-                ResponceObject.fulfillmentText = age + "歳です";
-                string json = JsonConvert.SerializeObject(ResponceObject);
+                    var today = DateTime.Today;
+                    int age = today.Year - Birthday.Year;
+                    if (Birthday > today.AddYears(-age)) age--;
 
-                //JSONでリターン
-                var ReturnObject = new ObjectResult(json);
-                return ReturnObject;
+                    log.LogInformation(age.ToString());
+
+                    var ResponceObject = new DialogFlowResponce();
+                    if (age < 0)
+                    {
+                        ResponceObject.fulfillmentText = "まだ生まれてないようですよ？";
+                    }
+                    else
+                    {
+                        ResponceObject.fulfillmentText = age + "歳です";
+                    }
+
+                    string json = JsonConvert.SerializeObject(ResponceObject);
+
+                    //JSONでリターン
+                    var ReturnObject = new ObjectResult(json);
+                    return ReturnObject;
+                }
+                catch (Exception)
+                {
+                    var ResponceObject = new DialogFlowResponce();
+                    ResponceObject.fulfillmentText = "ごめんなさい。誕生日が計算できません。";
+                    string json = JsonConvert.SerializeObject(ResponceObject);
+
+                    //JSONでリターン
+                    var ReturnObject = new ObjectResult(json);
+                    return ReturnObject;
+                }
+
             }
             else
             {
